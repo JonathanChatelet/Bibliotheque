@@ -27,20 +27,32 @@ namespace Bibliotheque.Repositories
             return _context.Livres.Find(id);
         }
 
-        public void ModifierLivre(Livre livre)
+        public bool ModifierLivre(Livre livre)
         {
-            _context.Livres.Update(livre);
+            var livreExistant = _context.Livres.Find(livre.LivreId);
+
+            if (livreExistant == null)
+                return false;
+
+            livreExistant.Isbn = livre.Isbn;
+            livreExistant.Titre = livre.Titre;
+            livreExistant.Editeur = livre.Editeur;
+            livreExistant.AnneePublication = livre.AnneePublication;
+            livreExistant.NbPage = livre.NbPage;
+            livreExistant.Genre = livre.Genre;
+            livreExistant.Emprunts = livre.Emprunts;
+            livreExistant.Auteurs = livre.Auteurs;
+
             _context.SaveChanges();
+            return true;
         }
 
-        public void SupprimerLivre(int id)
+        public bool SupprimerLivre(int id)
         {
             Livre livre = _context.Livres.Find(id);
-            if (livre != null)
-            {
-                _context.Livres.Remove(livre);
-                _context.SaveChanges();
-            }
+            if (livre == null) return false;
+            _context.Livres.Remove(livre);
+            _context.SaveChanges();
+            return true;
         }
-    }
 }

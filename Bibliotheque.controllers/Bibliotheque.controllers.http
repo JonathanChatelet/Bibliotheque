@@ -1,0 +1,6 @@
+@Bibliotheque.controllers_HostAddress = http://localhost:5133
+
+GET {{Bibliotheque.controllers_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -27,20 +27,33 @@ namespace Bibliotheque.Repositories
             return _context.Emprunts.Find(id);
         }
 
-        public void ModifierEmprunt(Emprunt emprunt)
+        public bool ModifierEmprunt(Emprunt emprunt)
         {
-            _context.Emprunts.Update(emprunt);
+            var empruntExistant = _context.Emprunts.Find(emprunt.EmpruntId);
+
+            if (empruntExistant == null)
+                return false;
+
+            empruntExistant.AbonneId = emprunt.AbonneId;
+            empruntExistant.LivreId = emprunt.LivreId;
+            empruntExistant.DateEmprunt = emprunt.DateEmprunt;
+            empruntExistant.DateRetour = emprunt.DateRetour;
+            empruntExistant.DateRetourEffective = emprunt.DateRetourEffective;
+            empruntExistant.Statut = emprunt.Statut;
+            empruntExistant.Abonne = emprunt.Abonne;
+            empruntExistant.Livre = emprunt.Livre;
+
             _context.SaveChanges();
+            return true;
         }
 
-        public void SupprimerEmprunt(int id)
+        public bool SupprimerEmprunt(int id)
         {
             Emprunt emprunt = _context.Emprunts.Find(id);
-            if (emprunt != null)
-            {
-                _context.Emprunts.Remove(emprunt);
-                _context.SaveChanges();
-            }
+            if (emprunt == null) return false;
+            _context.Emprunts.Remove(emprunt);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

@@ -27,20 +27,32 @@ namespace Bibliotheque.Repositories
             return _context.Abonnes.Find(id);
         }
 
-        public void ModifierAbonne(Abonne abonne)
+        public bool ModifierAbonne(Abonne abonne)
         {
-            _context.Abonnes.Update(abonne);
+            var abonneExistant = _context.Abonnes.Find(abonne.AbonneId);
+
+            if (abonneExistant == null)
+                return false;
+
+            abonneExistant.Nom = abonne.Nom;
+            abonneExistant.Prenom = abonne.Prenom;
+            abonneExistant.Adresse = abonne.Adresse;
+            abonneExistant.DateAbonnement = abonne.DateAbonnement;
+            abonneExistant.Email = abonne.Email;
+            abonneExistant.Telephone = abonne.Telephone;
+            abonneExistant.Emprunts = abonne.Emprunts;
+
             _context.SaveChanges();
+            return true;
         }
 
-        public void SupprimerAbonne(int id)
+        public bool SupprimerAbonne(int id)
         {
             Abonne abonne = _context.Abonnes.Find(id);
-            if(abonne != null)
-            {
-                _context.Abonnes.Remove(abonne);
-                _context.SaveChanges();
-            }
+            if(abonne == null) return false;
+            _context.Abonnes.Remove(abonne);
+            _context.SaveChanges();
+            return true;
         }
     }
 }
