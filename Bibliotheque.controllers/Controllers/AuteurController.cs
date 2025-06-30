@@ -24,7 +24,7 @@ namespace Bibliotheque.Controllers.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(Auteur auteur)
+        public IActionResult Create(Auteur auteur)
         {
             _auteurRepository.AjouterAuteur(auteur);
             return CreatedAtAction(nameof(Get), new { id = auteur.AuteurId }, auteur);

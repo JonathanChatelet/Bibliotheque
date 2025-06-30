@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 
 namespace Bibliotheque.Models;
@@ -27,6 +28,12 @@ public partial class BibliothequeContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        //var dateOnlyConverter = new ValueConverter<DateOnly, DateTime>(
+        //d => d.ToDateTime(TimeOnly.MinValue),
+        //d => DateOnly.FromDateTime(d));
+
+        
         modelBuilder.Entity<Abonne>(entity =>
         {
             entity.HasKey(e => e.AbonneId).HasName("PK__Abonne__08689B3521710430");
@@ -51,6 +58,10 @@ public partial class BibliothequeContext : DbContext
             entity.Property(e => e.Telephone)
                 .HasMaxLength(15)
                 .IsUnicode(false);
+            //entity.Property(e => e.DateAbonnement)
+            //    .HasColumnName("DateAbonnement")
+            //   .HasColumnType("date") // type SQL sans heure
+            //    .HasConversion(dateOnlyConverter);
         });
 
         modelBuilder.Entity<Auteur>(entity =>
@@ -71,6 +82,10 @@ public partial class BibliothequeContext : DbContext
             entity.Property(e => e.Prenom)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            //entity.Property(e => e.DateNaissance)
+            //    .HasColumnName("DateNaissance")
+            //    .HasColumnType("date") // type SQL sans heure
+            //    .HasConversion(dateOnlyConverter);
         });
 
         modelBuilder.Entity<Emprunt>(entity =>
@@ -97,6 +112,19 @@ public partial class BibliothequeContext : DbContext
                 .HasForeignKey(d => d.LivreId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Emprunt_Livre");
+
+            //entity.Property(e => e.DateEmprunt)
+            //    .HasColumnName("DateEmprunt")
+             //   .HasColumnType("date") // type SQL sans heure
+            //    .HasConversion(dateOnlyConverter);
+           // entity.Property(e => e.DateRetour)
+            //    .HasColumnName("DateRetour")
+            //    .HasColumnType("date") // type SQL sans heure
+            //    .HasConversion(dateOnlyConverter);
+          //  entity.Property(e => e.DateRetourEffective)
+             //   .HasColumnName("DateRetourEffective")
+             //   .HasColumnType("date") // type SQL sans heure
+              //  .HasConversion(dateOnlyConverter);
         });
 
         modelBuilder.Entity<Livre>(entity =>

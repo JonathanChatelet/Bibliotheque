@@ -24,7 +24,7 @@ namespace Bibliotheque.Controllers.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(Livre livre)
+        public IActionResult Create(Livre livre)
         {
             _livreRepository.AjouterLivre(livre);
             return CreatedAtAction(nameof(Get), new { id = livre.LivreId }, livre);
@@ -38,7 +38,7 @@ namespace Bibliotheque.Controllers.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public IActionResult Update(Livre livre)
         {
             var statut = _livreRepository.ModifierLivre(livre);

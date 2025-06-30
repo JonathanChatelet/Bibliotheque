@@ -28,4 +28,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bibliotheque.controllers\Bibliotheque.Controllers.csproj" />
+    <ProjectReference Include="..\Bibliotheque.Models\Bibliotheque.Models.csproj" />
+    <ProjectReference Include="..\Bibliotheque.repositories\Bibliotheque.Repositories.csproj" />
+  </ItemGroup>
+
 </Project>

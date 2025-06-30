@@ -24,7 +24,7 @@ namespace Bibliotheque.Controllers.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(Abonne abonne)
+        public IActionResult Create(Abonne abonne)
         {
             _abonneRepository.AjouterAbonne(abonne);
             return CreatedAtAction(nameof(Get), new { id = abonne.AbonneId }, abonne);

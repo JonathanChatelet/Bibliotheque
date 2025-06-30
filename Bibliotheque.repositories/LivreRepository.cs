@@ -42,7 +42,7 @@ namespace Bibliotheque.Repositories
             livreExistant.Genre = livre.Genre;
             livreExistant.Emprunts = livre.Emprunts;
             livreExistant.Auteurs = livre.Auteurs;
-
+            _context.Livres.Update(livreExistant);
             _context.SaveChanges();
             return true;
         }
@@ -55,4 +55,5 @@ namespace Bibliotheque.Repositories
             _context.SaveChanges();
             return true;
         }
+    }
 }

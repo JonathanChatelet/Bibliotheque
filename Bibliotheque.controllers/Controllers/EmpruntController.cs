@@ -24,7 +24,7 @@ namespace Bibliotheque.Controllers.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(Emprunt emprunt)
+        public IActionResult Create(Emprunt emprunt)
         {
             _empruntRepository.AjouterEmprunt(emprunt);
             return CreatedAtAction(nameof(Get), new { id = emprunt.EmpruntId }, emprunt);
