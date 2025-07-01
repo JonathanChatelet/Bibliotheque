@@ -38,7 +38,6 @@ namespace Bibliotheque.Repositories
             auteurExistant.Prenom = auteur.Prenom;
             auteurExistant.DateNaissance = auteur.DateNaissance;
             auteurExistant.Nationalite = auteur.Nationalite;
-            auteurExistant.Livres = auteur.Livres;
 
             _context.SaveChanges();
             return true;

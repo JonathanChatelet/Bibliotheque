@@ -27,7 +27,7 @@ namespace Bibliotheque.Repositories
             return _context.Livres.Find(id);
         }
 
-        public bool ModifierLivre(Livre livre)
+        public bool ModifierLivre(int id,Livre livre)
         {
             var livreExistant = _context.Livres.Find(livre.LivreId);
 
@@ -40,9 +40,7 @@ namespace Bibliotheque.Repositories
             livreExistant.AnneePublication = livre.AnneePublication;
             livreExistant.NbPage = livre.NbPage;
             livreExistant.Genre = livre.Genre;
-            livreExistant.Emprunts = livre.Emprunts;
-            livreExistant.Auteurs = livre.Auteurs;
-            _context.Livres.Update(livreExistant);
+            
             _context.SaveChanges();
             return true;
         }

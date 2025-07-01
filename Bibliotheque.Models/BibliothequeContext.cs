@@ -29,9 +29,9 @@ public partial class BibliothequeContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
-        //var dateOnlyConverter = new ValueConverter<DateOnly, DateTime>(
-        //d => d.ToDateTime(TimeOnly.MinValue),
-        //d => DateOnly.FromDateTime(d));
+        var dateOnlyConverter = new ValueConverter<DateOnly, DateTime>(
+        d => d.ToDateTime(TimeOnly.MinValue),
+        d => DateOnly.FromDateTime(d));
 
         
         modelBuilder.Entity<Abonne>(entity =>
@@ -58,10 +58,10 @@ public partial class BibliothequeContext : DbContext
             entity.Property(e => e.Telephone)
                 .HasMaxLength(15)
                 .IsUnicode(false);
-            //entity.Property(e => e.DateAbonnement)
-            //    .HasColumnName("DateAbonnement")
-            //   .HasColumnType("date") // type SQL sans heure
-            //    .HasConversion(dateOnlyConverter);
+            entity.Property(e => e.DateAbonnement)
+                .HasColumnName("DateAbonnement")
+                .HasColumnType("date") // type SQL sans heure
+                .HasConversion(dateOnlyConverter);
         });
 
         modelBuilder.Entity<Auteur>(entity =>
@@ -82,10 +82,10 @@ public partial class BibliothequeContext : DbContext
             entity.Property(e => e.Prenom)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            //entity.Property(e => e.DateNaissance)
-            //    .HasColumnName("DateNaissance")
-            //    .HasColumnType("date") // type SQL sans heure
-            //    .HasConversion(dateOnlyConverter);
+            entity.Property(e => e.DateNaissance)
+                .HasColumnName("DateNaissance")
+                .HasColumnType("date") // type SQL sans heure
+                .HasConversion(dateOnlyConverter);
         });
 
         modelBuilder.Entity<Emprunt>(entity =>
@@ -105,26 +105,28 @@ public partial class BibliothequeContext : DbContext
 
             entity.HasOne(d => d.Abonne).WithMany(p => p.Emprunts)
                 .HasForeignKey(d => d.AbonneId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Emprunt_Abonne");
 
             entity.HasOne(d => d.Livre).WithMany(p => p.Emprunts)
                 .HasForeignKey(d => d.LivreId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Emprunt_Livre");
 
-            //entity.Property(e => e.DateEmprunt)
-            //    .HasColumnName("DateEmprunt")
-             //   .HasColumnType("date") // type SQL sans heure
-            //    .HasConversion(dateOnlyConverter);
-           // entity.Property(e => e.DateRetour)
-            //    .HasColumnName("DateRetour")
-            //    .HasColumnType("date") // type SQL sans heure
-            //    .HasConversion(dateOnlyConverter);
-          //  entity.Property(e => e.DateRetourEffective)
-             //   .HasColumnName("DateRetourEffective")
-             //   .HasColumnType("date") // type SQL sans heure
-              //  .HasConversion(dateOnlyConverter);
+            entity.Property(e => e.DateEmprunt)
+                .HasColumnName("DateEmprunt")
+                .HasColumnType("date") 
+                .HasConversion(dateOnlyConverter);
+            entity.Property(e => e.DateRetour)
+                .HasColumnName("DateRetour")
+                .HasColumnType("date") 
+                .HasConversion(dateOnlyConverter);
+            entity.Property(e => e.DateRetourEffective)
+                .HasColumnName("DateRetourEffective")
+                .HasColumnType("date") 
+                .HasConversion(dateOnlyConverter);
         });
 
         modelBuilder.Entity<Livre>(entity =>
@@ -155,11 +157,13 @@ public partial class BibliothequeContext : DbContext
                     "LivreAuteur",
                     r => r.HasOne<Auteur>().WithMany()
                         .HasForeignKey("AuteurId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .IsRequired()
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_LivreAuteur_Auteur"),
                     l => l.HasOne<Livre>().WithMany()
                         .HasForeignKey("LivreId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .IsRequired()
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_LivreAuteur_Livre"),
                     j =>
                     {

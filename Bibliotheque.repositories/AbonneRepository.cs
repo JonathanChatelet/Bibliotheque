@@ -40,7 +40,6 @@ namespace Bibliotheque.Repositories
             abonneExistant.DateAbonnement = abonne.DateAbonnement;
             abonneExistant.Email = abonne.Email;
             abonneExistant.Telephone = abonne.Telephone;
-            abonneExistant.Emprunts = abonne.Emprunts;
 
             _context.SaveChanges();
             return true;

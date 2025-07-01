@@ -41,7 +41,7 @@ namespace Bibliotheque.Controllers.Controllers
         [HttpPut]
         public IActionResult Update(Livre livre)
         {
-            var statut = _livreRepository.ModifierLivre(livre);
+            var statut = _livreRepository.ModifierLivre(livre.LivreId, livre);
             if (!statut) return NotFound();
             return NoContent();
         }

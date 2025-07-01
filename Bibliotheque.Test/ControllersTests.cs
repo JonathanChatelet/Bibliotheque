@@ -27,10 +27,10 @@ namespace Bibliotheque.Test
 
         public ControllersTests()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<BibliothequeContext>();
-            optionsBuilder.UseInMemoryDatabase(databaseName: "TestBibliotheque");
-
-            var context = new BibliothequeContext(optionsBuilder.Options);
+            var optionsBuilder = new DbContextOptionsBuilder<BibliothequeContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+            var context = new BibliothequeContext(optionsBuilder);
 
             abonneController = new AbonneController(new AbonneRepository(context));
             auteurController = new AuteurController(new AuteurRepository(context));
@@ -58,7 +58,7 @@ namespace Bibliotheque.Test
             auteur.Livres = livres;
 
 
-            livre.LivreId = 2;
+            livre.LivreId = 1;
             livre.Isbn = "051236845555";
             livre.Titre = "Le mal";
             livre.Editeur = "Pocket";
@@ -84,25 +84,40 @@ namespace Bibliotheque.Test
             emprunt.DateEmprunt = new DateOnly(2025, 06, 10);
             emprunt.DateRetour = new DateOnly(2025, 07, 10);
             emprunt.DateRetourEffective = null;
-            emprunt.Statut = "Normal";
+            emprunt.Statut = "En prêt";
             emprunt.Abonne = abonne;
             emprunt.Livre = livre;
 
+            context.Auteurs.Add(auteur);
+            context.Livres.Add(livre);
+            context.Abonnes.Add(abonne);
+            context.Emprunts.Add(emprunt);
+            context.SaveChanges();
+
         }
 
+        // Test de LivreController
         [Fact]
         public void AddLivreTest()
         {
-            var result = livreController.Create(livre);
+            var newLivre = new Livre();
+            newLivre.LivreId = 2;
+            newLivre.Isbn = "22222222222";
+            newLivre.Titre = "Le bien";
+            newLivre.Editeur = "Larousse";
+            newLivre.AnneePublication = 2020;
+            newLivre.NbPage = 245;
+            newLivre.Genre = "Romantique";
+
+            var result = livreController.Create(newLivre);
             var actionResult = Assert.IsType<CreatedAtActionResult>(result);
-            var createdLivre = Assert.IsType<Livre>(actionResult.Value);
-            Assert.Equal(livre.LivreId, createdLivre.LivreId);
+            Assert.IsType<Livre>(actionResult.Value);
         }
 
         [Fact]
-        public void ModifLivrTest()
+        public void ModifLivreTest()
         {
-            livre.Isbn = "22222222222";
+            livre.Isbn = "99999999999999";
             var result = livreController.Update(livre);
             Assert.IsType<NoContentResult>(result);
         }
@@ -121,6 +136,135 @@ namespace Bibliotheque.Test
         public void SuprLivreTest()
         {
             var result = livreController.Delete(livre.LivreId);
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        // Test de AbonneController
+        [Fact]
+        public void AddAbonneTest()
+        {
+            var newAbonne = new Abonne();
+            newAbonne.AbonneId = 2;
+            newAbonne.Nom = "Watson";
+            newAbonne.Prenom = "John";
+            newAbonne.Adresse = "3 Rue Proust - 75009 PARIS";
+            newAbonne.Email = "Watson.John@gmail";
+            newAbonne.Telephone = "064585231";
+            newAbonne.DateAbonnement = new DateOnly(2025, 06, 30);
+
+            var result = abonneController.Create(newAbonne);
+            var actionResult = Assert.IsType<CreatedAtActionResult>(result);
+            Assert.IsType<Abonne>(actionResult.Value);
+        }
+
+        [Fact]
+        public void ModifAbonneTest()
+        {
+            abonne.Telephone = "0987654321";
+            var result = abonneController.Update(abonne);
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public void GetAbonneTest()
+        {
+            var result = abonneController.Get(abonne.AbonneId);
+            if (result.Result is OkObjectResult ok && ok.Value is Abonne abonneRecu)
+            {
+                Assert.Equal(abonne.Telephone, abonneRecu.Telephone);
+            }
+        }
+
+        [Fact]
+        public void SuprAbonneTest()
+        {
+            var result = abonneController.Delete(abonne.AbonneId);
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        // Test de AuteurController
+        [Fact]
+        public void AddAuteurTest()
+        {
+            var newAuteur = new Auteur();
+            newAuteur.AuteurId = 2;
+            newAuteur.Nom = "Legrand";
+            newAuteur.Prenom = "Jacques";
+            newAuteur.DateNaissance = new DateOnly(1945, 05, 28);
+            newAuteur.Nationalite = "Française";
+
+            var result = auteurController.Create(newAuteur);
+            var actionResult = Assert.IsType<CreatedAtActionResult>(result);
+            Assert.IsType<Auteur>(actionResult.Value);
+        }
+
+        [Fact]
+        public void ModifAuteurTest()
+        {
+            auteur.Nationalite = "Belge";
+            var result = auteurController.Update(auteur);
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public void GetAuteurTest()
+        {
+            var result = auteurController.Get(auteur.AuteurId);
+            if (result.Result is OkObjectResult ok && ok.Value is Auteur auteurRecu)
+            {
+                Assert.Equal(auteur.Nationalite, auteurRecu.Nationalite);
+            }
+        }
+
+        [Fact]
+        public void SuprAuteurTest()
+        {
+            var result = auteurController.Delete(auteur.AuteurId);
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        // Test de EmpruntController
+        [Fact]
+        public void AddEmpruntTest()
+        {
+            var newEmprunt = new Emprunt();
+            newEmprunt.EmpruntId = 2;
+            newEmprunt.AbonneId = 2;
+            newEmprunt.LivreId = 2;
+            newEmprunt.DateEmprunt = new DateOnly(2025, 06, 25);
+            newEmprunt.DateRetour = new DateOnly(2025, 07, 25);
+            newEmprunt.DateRetourEffective = null;
+            newEmprunt.Statut = "En prêt";
+            newEmprunt.Abonne = abonne;
+            newEmprunt.Livre = livre;
+
+            var result = empruntController.Create(newEmprunt);
+            var actionResult = Assert.IsType<CreatedAtActionResult>(result);
+            Assert.IsType<Emprunt>(actionResult.Value);
+        }
+
+        [Fact]
+        public void ModifEmpruntTest()
+        {
+            emprunt.Statut = "En retard";
+            var result = empruntController.Update(emprunt);
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public void GetEmpruntTest()
+        {
+            var result = empruntController.Get(emprunt.EmpruntId);
+            if (result.Result is OkObjectResult ok && ok.Value is Emprunt empruntRecu)
+            {
+                Assert.Equal(emprunt.Statut, empruntRecu.Statut);
+            }
+        }
+
+        [Fact]
+        public void SuprEmpruntTest()
+        {
+            var result = empruntController.Delete(emprunt.EmpruntId);
             Assert.IsType<NoContentResult>(result);
         }
     }
